@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>conditional rendering</title>
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<li class="nav" v-text="msg"></li>
+			<li class="nav" v-text="msg"></li>
+			<li class="nav" v-text="msg"></li>
+			<li class="nav" v-text="msg"></li>
+			<li class="nav" v-text="msg"></li>
+		</ul>
+
+		<h1 v-if="isActive">Yes v-if</h1>
+		<h1 v-show="isActive">Yes v-show</h1>
+		<h1 v-if="notActive">Yes</h1>
+		<h1 v-else>No</h1>
+
+		<p v-if="Math.random() > .5">Now you see me</p>
+		<p v-else>Now you don't</p>
+
+		<!-- v-else-if -->
+		<p v-if="type === 'A'">A</p>
+		<p v-else-if="type === 'B'">B</p>
+		<p v-else-if="type === 'C'">C</p>
+		<p v-else>Not A/B/C</p>
+
+		<!-- controlling reusable elements with key -->
+		<h3><i>don't use the key:</i></h3>
+		<div v-if="loginType === 'username'">
+			<label for="">Username</label>
+			<input type="text" placeholder="Enter your name">
+		</div>
+		<div v-else>
+			<label for="">Email</label>
+			<input type="email" placeholder="Enter your email address">
+		</div>
+		
+		<h3><i>use the key:</i></h3>
+		<div v-if="loginType === 'username'">
+			<label for="">Username</label>
+			<input type="text" placeholder="Enter your name" key="username-input">
+		</div>
+		<div v-else>
+			<label for="">Email</label>
+			<input type="email" placeholder="Enter your email address" key="email-input">
+		</div>
+		<input type="button" value="change the tab" v-on:click="change()">
+
+	</div>
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm = new Vue({
+	el: '#app',
+	data: {
+		msg: 'Hello, world !',
+		isActive: 1,
+		notActive: false,
+		type: '',
+		loginType: 'username'
+	},
+	methods: {
+		change: function() {
+			if(this.loginType) {
+				this.loginType = false;
+			}else {
+				this.loginType = 'username';
+			}
+		}
+	}
+})
+</script>
+</html>

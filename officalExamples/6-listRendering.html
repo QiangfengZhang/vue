@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>list rendering</title>
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<!-- base use v-for -->
+			<p><i>base use v-for</i></p>
+			<li v-for="(item, index) in items">
+				{{ index }} -- {{ item.message }}
+			</li>
+
+			<li v-for="(item, index) of items">
+				{{ index + 1 }} -- {{ item.message }}
+			</li>
+
+			<!-- range v-for -->
+			<p><i>range v-for:</i></p>
+			<li v-for="n in 10">{{ n }}</li>
+
+			<!-- object v-for -->
+			<p><i>object v-for:</i></p>
+			<li v-for="value in object">{{ value }}</li>
+
+			<!-- displaying filtered/sorted results -->
+			<p><i>displaying filtered/sorted results:</i></p>
+			<li v-for="n in evenNumbers">{{ n }}</li>
+		</ul>
+	</div>
+
+	<div id="todo-list-example">
+		<input type="text"
+			v-model="newTodoText"
+			v-on:keyup.enter="addNewTodo"
+			placeholder="Add a todo"
+		>
+		<ul>
+			<li
+				is="todo-item"
+				v-for="(todo, index) in todos"
+				v-bind:key="todo"
+				v-bind:title="todo"
+				v-on:remove="todos.splice(index, 1)"
+			></li>
+		</ul>
+	</div>
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm = new Vue({
+	el: '#app',
+	data: {
+		items: [
+			{ message: 'Qiangfeng' },
+			{ message: 'Qiangfeng Zhang' },
+			{ message: '强锋' },
+			{ message: '张' }
+		],
+		object: {
+			firstName: 'Qiangfeng',
+			lastName: 'Zhang',
+			age: 23
+		},
+		numbers: [1, 2, 3, 4, 5, 6]
+	},
+	computed: {
+		evenNumbers: function() {
+			return this.numbers.filter(function(number) {
+				return number % 2 === 0;
+			})
+		}
+	}
+});
+
+Vue.component('todo-item', {
+	template: `
+		<li>
+			{{ title }}
+			<button v-on:click="$emit('remove')">x</button>
+		</li>
+	`,
+	props: ['title']
+})
+
+new Vue({
+	el: '#todo-list-example',
+	data: {
+		newTodoText: '',
+		todos: [
+			'Do the dishes',
+			'Take out the trash',
+			'Mow the lawn'
+		]
+	},
+	methods: {
+		addNewTodo: function() {
+			this.todos.push(this.newTodoText);
+			this.newTodoText = '';
+		}
+	}
+})
+</script>
+</html>

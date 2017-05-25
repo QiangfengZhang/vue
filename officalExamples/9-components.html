@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>components</title>
+</head>
+<body>
+	<div id="example1">
+		<my-component></my-component>
+	</div>
+	<div id="example2">
+		<my-component></my-component>
+	</div>
+	
+	<p><i>share the data</i></p>
+	<div id="example3">
+		<simple-counter></simple-counter>
+		<simple-counter></simple-counter>
+		<simple-counter></simple-counter>
+	</div>
+
+	<p><i>has own data</i></p>
+	<div id="example4">
+		<simple-counter1></simple-counter1>
+		<simple-counter1></simple-counter1>
+		<simple-counter1></simple-counter1>
+	</div>
+
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+// use `Vue.component('tagName', options)` to register a global component
+
+Vue.component('my-component', {
+	template: '<div>A custom component !</div>'
+})
+var vm = new Vue({
+	el: '#example1'
+});
+
+// local registration
+// var Child = {
+// 	template: '<div>A custom component! local </div>'
+// }
+var vm2 = new Vue({
+	el: '#example2',
+	components: {
+		'my-component': {
+			template: '<div>A custom component ! local</div>'
+		}
+	}
+});
+
+// data must be a function
+var data = { counter: 0 };
+Vue.component('simple-counter', {
+	template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+	data: function() {
+		return data
+	}
+});
+var vm3 = new Vue({
+	el: '#example3'
+})
+
+var vm4 = new Vue({
+	el: '#example4',
+	components: {
+		'simple-counter1': {
+			pros: [ 'counter1' ],
+			template: '<button v-on:click="counter1 += 1">{{ counter1 }}</button>',
+			data: function() {
+				return {
+					counter1: 0
+				}
+			}
+		}
+	}
+})
+</script>
+</html>

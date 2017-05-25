@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>event handling</title>
+</head>
+<body>
+	<!-- listening to Events -->
+	<p><i>listening to events:</i></p>
+	<div id="example-1">
+		<button v-on:click="counter += 1">Add 1</button>
+		<p>The button above has been clicked {{ counter }} times !</p>
+	</div>
+	<!-- method event handlers -->
+	<p><i>method event handlers:</i></p>
+	<div id="example-2">
+		<!-- `greet` is the name of a method defined below -->
+		<button v-on:click="greet">GREET</button>
+	</div>
+
+	<!-- methods in inline handlers -->
+	<p><i>methods in inline handlers:</i></p>
+	<div id="example-3">
+		<button v-on:click="say('Hi')">SAY HI</button>
+		<button v-on:click="say('what')">SAY WHAT</button>
+		<button v-on:click="warn('Form cannot be submitted yet.', $event)">SUBMIT</button>
+	</div>
+
+	<!-- event modifiers -->
+	<p><i>event modifiers:</i></p>
+	<div id="example-4">
+		<a v-on:click.stop="doThis">stop</a>
+		<p v-text="name"></p>
+	</div>
+
+	<!-- key modifiers -->
+	<!-- full list of key modifier aliases: -->
+	<!-- enter/tab/delete/esc/space/up/down/left/right -->
+	<p><i>key modifiers:</i></p>
+	<div id="example-5">
+		<input type="text" v-on:keyup.space="todo" placeholder="space up">
+	</div>
+
+	<!-- modifier keys -->
+	<!-- ctrl/alt/shift/meta -->
+	<p><i>modifier keys</i></p>
+	<div id="example-6">
+		<input type="text" v-on:click.ctrl="doSomething" placeholder="ctrl + click">
+	</div>
+
+
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm1 = new Vue({
+	el: '#example-1',
+	data: {
+		counter: 0
+	}
+});
+
+var vm2 = new Vue({
+	el: '#example-2',
+	data: {
+		name: 'Qiangfeng Zhang'
+	},
+	methods: {
+		greet: function(event) {
+			// `this` inside methods points to the Vue instance
+			alert('Hello ' + this.name + ' !');
+			// `event` is the native DOM event
+			if(event) {
+				alert(event.target.tagName);
+			}
+		}
+	}
+});
+
+var vm3 = new Vue({
+	el: '#example-3',
+	methods: {
+		say: function(message) {
+			alert(message);
+		},
+		warn: function(message, event) {
+			// now we have access to the native event
+			if(event) event.preventDefault();
+			alert(message);
+		}
+	}
+});
+
+var vm4 = new Vue({
+	el: '#example-4',
+	data: {
+		name: 'Qiangfeng Zhang'
+	},
+	methods: {
+		doThis: function() {
+			console.log(" stop ");
+			this.name = "张强锋";
+		}
+	}
+});
+
+var vm5 = new Vue({
+	el: '#example-5',
+	methods: {
+		todo: function() {
+			alert("space up");
+		}
+	}
+});
+
+var vm6 = new  Vue({
+	el: '#example-6',
+	methods: {
+		doSomething: function() {
+			alert("click + ctrl");
+		}
+	}
+})
+</script>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>computed properties and watchers</title>
+	<style>
+	div {
+		width: 400px;
+		height: 200px;
+		margin: 5px auto;
+		border: 1px dashed black;
+	}
+	</style>
+</head>
+<body>
+	<div id="example">
+		<h3><i>computed vs methods: computed</i></h3>
+		<p>Original message: {{ message }}</p>
+		<p>Computed reversed message: {{ reversedMessage }}</p>
+	</div>
+
+	<div id="demo1">
+		<h3><i>computed vs methods: methods</i></h3>
+		<p>Original message: {{ message }}</p>
+		<p>Computed reversed message: {{ reversedMessage() }}</p>
+	</div>
+
+	<div id="demo2">
+		<h3><i>computed vs watch: computed</i></h3>
+		<p>{{ fullName }}</p>
+	</div>
+
+	<div id="demo3">
+		<h3><i>computed vs watch: watch</i></h3>
+		<p>{{ fullName }}</p>
+	</div>
+
+	<div id="demo4">
+		<h3><i>computed setter:</i></h3>
+		<p>{{ firstName }}</p>
+		<p>{{ lastName }}</p>
+		<p>{{ fullName }}</p>
+	</div>
+
+	<!-- 观察watchers -->
+	<div id="watch-example">
+		<p>
+			Ask a yes/no question:
+			<input v-model="question" type="text">
+		</p>
+		<p>{{ answer }}</p>
+	</div>
+
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm = new Vue({
+	el: '#example',
+	data: {
+		message: 'Hello, Qiangfeng Zhang !'
+	},
+	computed: {
+		// a computed getter
+		reversedMessage: function() {
+			// 'this' points to the vm instance
+			return this.message.split("").reverse().join("");
+		}
+	}
+});
+
+var vm1 = new Vue({
+	el: '#demo1',
+	data: {
+		message: 'I\'m in the method' 
+	},
+	// in component
+	methods: {
+		reversedMessage: function() {
+			return this.message.split("").reverse().join("");
+		}
+	}
+});
+
+var vm2 = new Vue({
+	el: '#demo2',
+	data: {
+		firstName: 'Foo',
+		lastName: 'Bar'
+	},
+	computed: {
+		fullName: function() {
+			return this.firstName + ' ' + this.lastName;
+		}
+	}
+});
+
+var vm3 = new Vue({
+	el: '#demo3',
+	data: {
+		firstName: 'Foo',
+		lastName: 'Bar',
+		fullName: 'Foo Bar'
+	},
+	watch: {
+		firstName: function(val) {
+			this.fullName = val + ' ' + this.lastName;
+		},
+		lastName: function(val) {
+			this.fullName = this.firstName + ' ' + val;
+		}
+	}
+});
+
+var vm4 = new Vue({
+	el: '#demo4',
+	data: {
+		firstName: 'Foo',
+		lastName: 'Bar'
+	},
+	computed: {
+		fullName: {
+			// getter
+			get: function() {
+				return this.firstName + ' ' + this.lastName;
+			},
+			// setter
+			set: function(newValue) {
+				var names = newValue.split(' ');
+				this.firstName = names[0];
+				this.lastName = names[names.length - 1];
+			}
+		}
+	}
+});
+
+var vm5 = new Vue({
+	el: '#watch-example',
+	data: {
+		question: '',
+		answer: 'I cannot give you an answer until you ask a question!'
+	},
+	watch: {
+		// querstion is changed
+		question: function(newQuestion) {
+			this.answer = "Waiting for you to stop typing...";
+			this.getAnswer();
+		}
+	},
+	methods: {
+		getAnswer: function() {
+			if(this.question.indexOf('?') === -1) {
+				this.answer = 'Question usually contain a quesrion mark. ;-)';
+				return
+			}
+			this.answer = "Thinking... you are so smart !"
+		}
+	}
+})
+</script>
+</html>

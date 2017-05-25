@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Class and Style Bindings</title>
+</head>
+<body>
+	<div id="app">
+		<div v-bind:class="{ active: isActive, 'text-danger': hasError }">111</div>
+		<div v-bind:class="classObject1"></div>
+		<div v-bind:class="classObject2"></div>
+		<div v-bind:class="[activeClass, errorClass]"></div>
+		<div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
+		<my-component class="baz boo"></my-component>
+
+		<!-- binding inline styles -->
+		<div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">You wanner to be what you want!</div>
+		<div v-bind:style="styleObject">You wanner to be what you want!</div>
+		<div v-bind:style="[ basestyles, overridingstyles]">You wanner to be what you want!</div>
+	</div>
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+Vue.component('my-component', {
+	template: '<p class="foo bar">Hi</p>'
+})
+var vm = new Vue({
+	el: '#app',
+	data: {
+		isActive: true,
+		hasError: true,
+		classObject1: {
+			active: true,
+			'text-danger': true
+		},
+		activeClass: 'active',
+		errorClass: 'text-danger',
+		activeColor: 'red',
+		fontSize: 30,
+		styleObject: {
+			color: 'red',
+			fontSize: '13px'
+		},
+		basestyles: {
+			color: 'red',
+			fontSize: '16px',
+			border: '1px solid black'
+		},
+		overridingstyles: {
+			width: '400px',
+			height: '300px',
+			margin: '5px auto'
+		}
+	},
+	computed: {
+		classObject2: function() {
+			return {
+				active: this.isActive && this.hasError,
+				'text-danger': this.hasError
+			}
+		}
+	}
+});
+
+</script>
+</html>

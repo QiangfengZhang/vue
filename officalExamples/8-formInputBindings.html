@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>form input bindings</title>
+</head>
+<body>
+	<div id="app">
+		<!-- basic usage -->
+		<input v-model="message" placeholder="edit me">
+		<p>Message is: {{ message }}</p>
+
+		<p><i>Multiline message is: </i></p>
+		<p style="white-space: pre">{{ message }}</p>
+		<br>
+		<textarea v-model="message" placeholder="add multiple lines" cols="30" rows="10"></textarea>
+
+		<!-- checkbox -->
+		<p><i>checkbox</i></p>
+		<input type="checkbox" id="checkbox" v-model="checked">
+		<label for="checkbox">{{ checked }}</label>
+
+		<!-- multiple checkboxes,bound to the same Array: -->
+		<p><i>multiple checkboxes,bound to the same Array:</i></p>
+		<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+		<label for="jack">Jack</label>
+		<input type="checkbox" id="jhon" value="Jhon" v-model="checkedNames">
+		<label for="jhon">Jhon</label>
+		<input type="checkbox" id="mike" value="Mick" v-model="checkedNames">
+		<label for="mick">Mick</label>
+		<br>
+		<span>Checked names: {{ checkedNames }}</span>
+
+		<!-- radio -->
+		<p><i>radio:</i></p>
+		<input type="radio" id="one" value="One" v-model="whichChecked">
+		<label for="one">One</label>
+		<br>
+		<input type="radio" id="two" value="Two" v-model="whichChecked">
+		<label for="two">Two</label>
+		<br>
+		<span>checked: {{ whichChecked }}</span>
+
+		<!-- select -->
+		<p><i>select:</i></p>
+		<select v-model="selected">
+			<option disabled value="">Please select one</option>
+			<option value="you are a april fool">A</option>
+			<option value="you are beautiful">B</option>
+			<option value="you are handsome">C</option>
+		</select>
+		<span>Selected: {{ selected }}</span>
+
+		<!-- dynamic options rendered with v-for -->
+		<p><i>dynamic options rendered with v-for:</i></p>
+		<select v-model="select1">
+			<option disabled value="">Please select one</option>
+			<option v-for="option in options" v-bind:value="option.value">{{ option.text }}</option>
+		</select>
+		<span>Selected: {{ select1 }}</span>
+
+
+		<!-- value bindings -->
+		<!-- checkbox -->
+		<p><i>checkbox bind value:</i></p>
+		<input 
+			type="checkbox"
+			v-model="toggle"
+			v-bind:true-value="a"
+			v-bind:false-value="b"
+		>
+		<span>{{ toggle }}</span>
+
+		<!-- radio -->
+		<p><i>radio bind value:</i></p>
+		<input 
+			type="radio"
+			v-model="pick"
+			v-bind:value="a"
+		>
+		<span>{{ pick }}</span>
+
+		<!-- select -->
+		<p><i>select bind value</i></p>
+		<select v-model="selection">
+			<option v-bind:value="{ number: 123 }">A</option>
+		</select>
+		<span>{{ selection.number }}</span>
+
+		<!-- modifiers -->
+		<!-- lazy/number/trim -->
+		<p><i>modifiers: lazy/number/trim</i></p>
+		<input type="text" v-model.lazy='msg' placeholder="Please write down something">
+		<p>What writed down above is {{ msg }}</p>
+		<input type="number" v-model.number="age">
+		<p>The age is {{ age }}</p>
+		<input type="text" v-model.trim="keywords">
+		<p>The keywords has been deleted white-space {{ keywords }}</p>
+	</div>
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm = new Vue({
+	el: '#app',
+	data: {
+		message: '',
+		checked: false,
+		checkedNames: [],
+		whichChecked: '',
+		selected: '',
+		select1: '',
+		options: [
+			{ text: 'A', value: 'you are a april fool' },
+			{ text: 'B', value: 'you are beautiful' },
+			{ text: 'C', value: 'you are handsome' },
+		],
+		toggle: '',
+		a: '选中',
+		b: '未选',
+		pick: 'none',
+		selection: '',
+		msg: '',
+		age: '',
+		keywords: ''
+	}
+});
+</script>
+</html>

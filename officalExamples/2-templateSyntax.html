@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>template syntax</title>
+</head>
+<body>
+	<!-- 数据绑定的最常见形式就是使用“ Mustache ”语法（双大括号）的文本插值 -->
+	<div id="app">
+		<span v-once>change Message once: {{ msg }}</span><br>
+		<span>Message: {{ msg }}</span><br>
+		<span>三元表达式: {{ 3 > 1 ? 'YES' : 'NO' }}</span><br>
+		<span>reverse Message: {{ msg.split('').reverse().join('') }}</span><br>
+	</div>
+</body>
+<script src="../vueDocument/vue.js"></script>
+<script>
+var vm = new Vue({
+	el: '#app',
+	data: {
+		msg: 'Welcome to the vue world !'
+	}
+})
+vm.msg = "hello";
+setInterval(function() {
+	vm.$data.msg = "Qiangfeng Zhang has changed the msg !";	
+}, 1000);
+setInterval(function() {
+	vm.$data.msg = "Qiangfeng Zhang has changed the msg again !";
+}, 2000);
+
+</script>
+</html>
