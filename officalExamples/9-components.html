@@ -12,22 +12,84 @@
 		<my-component></my-component>
 	</div>
 	
-	<p><i>share the data</i></p>
+	<p><i>share the data:</i></p>
 	<div id="example3">
 		<simple-counter></simple-counter>
 		<simple-counter></simple-counter>
 		<simple-counter></simple-counter>
 	</div>
 
-	<p><i>has own data</i></p>
+	<p><i>has own data:</i></p>
 	<div id="example4">
 		<simple-counter1></simple-counter1>
 		<simple-counter1></simple-counter1>
 		<simple-counter1></simple-counter1>
 	</div>
 
+	<!-- dynamic prop -->
+	<p><i>dynamic props:</i></p>
+	<div id="example5">
+		<input type="text" v-model="parentMsg">
+		<br>
+		<child v-bind:my-message="parentMsg"></child>
+	</div>
+
+	<!-- custom events -->
+	<p><i>custom events -- v-on:</i></p>
+	<div id="example6">
+		<p>{{ total }}</p>
+		<!-- 父组件可以在使用子组件的地方直接用 v-on 来监听子组件触发的事件 -->
+		<button-counter v-on:increment="incrementTotal"></button-counter>	
+		<button-counter v-on:increment="incrementTotal"></button-counter>	
+	</div>
+
+	<!-- input -->
+	<p><i>currency input:</i></p>
+	<div id="example7">
+		<currency-input v-model="price"></currency-input>	
+	</div>
+
+	<!-- a more robust currency filter -->
+	<p><i>a more robust currency filter:</i></p>
+	<div id="example8">
+		<currency-input label="Price" v-model="price"></currency-input> 
+		<currency-input label="Shipping" v-model="shipping"></currency-input> 
+		<currency-input label="Handling" v-model="handling"></currency-input>
+		<currency-input label="Discount" v-model="discount"></currency-input>
+		<p>Total: ${{ total }}</p>
+	</div>
+
+	<!-- single slot -->
+	<p><i>Single slot:</i></p>
+	<div>
+		<h2>I'm the child title</h2>
+		<slot>
+			This will only be displayed if there is no content to be distributed.
+		</slot>
+	</div>
+
+	<!-- Named slots -->
+	<p><i>Named slots: </i></p>
+	<div id="example9">
+		<app-layout>
+			<h1 slot="header">Here might be a page title.</h1>
+			<p>A paragraph for the main content.</p>
+			<p>And another one.</p>
+			<p slot="footer">Here's some contact information</p>
+		</app-layout>
+	</div>
+
+	<!-- X-Templates -->
+	<p><i>X-Templates: </i></p>
+	<div id="example10">
+		<script type="text/x-template" id="hello-world-template">
+			<p>Hello hello hello</p>
+		</script>
+	</div>
+
 </body>
 <script src="../vueDocument/vue.js"></script>
+<script src="../vueDocument/currencyValidator.js"></script>
 <script>
 // use `Vue.component('tagName', options)` to register a global component
 
@@ -67,13 +129,189 @@ var vm4 = new Vue({
 	el: '#example4',
 	components: {
 		'simple-counter1': {
-			pros: [ 'counter1' ],
 			template: '<button v-on:click="counter1 += 1">{{ counter1 }}</button>',
 			data: function() {
 				return {
 					counter1: 0
 				}
 			}
+		}
+	}
+});
+
+var vm5 = new Vue({
+	el: '#example5',
+	data: {
+		parentMsg: 'message from parent'
+	},
+	components: {
+		'child': {
+			props: ['myMessage'],
+			template: '<span>{{ myMessage }}</span>'
+		}
+	}
+});
+
+var vm6 = new Vue({
+	el: '#example6',
+	data: {
+		total: 0
+	},
+	methods: {
+		incrementTotal: function() {
+			this.total += 1;
+		}
+	},
+	components: {
+		'button-counter': {
+			template: '<button v-on:click="increment">{{ counter }}</button>',
+			data: function() {
+				return {
+					counter: 0
+				}
+			},
+			methods: {
+				increment: function() {
+					this.counter += 1;
+					// 触发父组件的 increment 事件
+					this.$emit('increment');
+				}
+			},
+		}
+	}
+});
+
+var vm7 = new Vue({
+	el: '#example7',
+	data: {
+		price: 0
+	},
+	components: {
+		'currency-input': {
+			template: '\
+				<span>\
+					$\
+					<input\
+						ref="input"\
+						v-bind:value="value"\
+						v-on:input="updateValue($event.target.value)"\
+					>\
+				</span>\
+			',
+			props: ['value'],
+			methods: {
+				// 不是直接更新值，而是使用此方法对输入值进行格式化和位数限制
+				updateValue: function(value) {
+					var formattedValue = value
+						// 删除两侧的空格符
+						.trim()
+						// 保留 2 位小数
+						.slice(0, value.indexOf('.') === -1 ? value.length : value.indexOf('.') + 3);
+					// 如果值不统一，手动覆盖以保持一致
+					if(formattedValue !== value) {
+						this.$refs.input.value = formattedValue;
+					}
+					// 通过 input 事件发出数值
+					this.$emit('input', Number(formattedValue));
+				}
+			}
+		}
+	}
+});
+
+var vm8 = new Vue({
+	el: '#example8',
+	data: {
+		price: 0,
+		shipping: 0,
+		handling: 0,
+		discount: 0,
+	},
+	computed: {
+		total: function() {
+			return ((this.price * 100 + 
+					this.shipping * 100 +
+					this.handling * 100 -
+					this.discount * 100
+					) / 100).toFixed(2)
+		}
+	},
+	components: {
+		'currency-input': {
+			template: `
+				<div>
+					<label v-if="label">{{ label }}</label>
+					$
+					<input
+						ref="input"
+						v-bind:value="value"
+						v-on:input="updateValue($event.target.value)"
+						v-on:focus="selectAll"
+						v-on:blur="formatValue"
+					>
+				</div>
+			`,
+			props: {
+				value: {
+					type: Number,
+					default: 0
+				},
+				label: {
+					type: String,
+					default: ''
+				}
+			},
+			mounted: function() {
+				this.formatValue()
+			},
+			methods: {
+				updateValue: function(value) {
+					var result = currencyValidator.parse(value, this.value)
+					if(result.warning) {
+						this.$refs.input.value = result.value
+					}
+					this.$emit('input', result.value)
+				},
+				formatValue: function() {
+					this.$refs.input.value = currencyValidator.format(this.value)
+				},
+				selectAll: function(event) {
+					// wordaround for Safari bug
+					setTimeout(function() {
+						event.target.select()
+					}, 0)
+				}
+			}
+		}
+	}
+});
+
+var vm9 = new Vue({
+	el: '#example9',
+	components: {
+		'app-layout': {
+			template: `
+				<div class="container">
+					<header>
+						<slot name="header"></slot>
+					</header>
+					<main>
+						<slot></slot>
+					</main>
+					<footer>
+						<slot name="footer"></slot>
+					</footer>
+				</div>
+			`
+		}
+	}
+});
+
+var vm10 = new Vue({
+	el: '#example10',
+	components: {
+		'hello-world': {
+			template: '#hello-world-template'
 		}
 	}
 })
